@@ -22,24 +22,38 @@ shinyUI(dashboardPage(
                                         menuSubItem('Prediction', tabName='prediction')),
                                menuItem('Data'))),
   dashboardBody(tabItems(tabItem(tabName='about',p("This app was created to test three surpervised learning models on a data set 
-                    containing greenhouse gas emissions.  The models will be used to predict the ghg 
-                    (green house gases) per capita based on the other information provided in the data set. 
-                    The data used in this shiny app was provided by", 
-                  a("Our World in Data",href="https://ourworldindata.org"), 
-                  "and contains information regarding greenhouse gas emissions for multiple countries from 
-                    1990 to 2016. This data set has been modified from the original to remove any rows that 
-                    are missing data to make the predictive modeling process more accurate for the remaining 
-                    data. As a result of removing this data, several countries have been omitted.   
-                    The original data set along with more information regarding its contents can be found", 
-                  a("here.",href="https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions"),
-                  "There are multiple tabs to this app.  The Data Exploration page allows the user to create 
+                    containing greenhouse gas emissions.  The models will be used to predict the US surface temperature change
+                    from the greenhouse gas emissions. 
+                    The data used in this shiny app was provided by the", 
+                  a("US EPA",href="https://ourworldindata.org"), 
+                  "and contains information regarding global greenhouse gas emissions and climate change in the US from 1979 to 2019. The data
+                  was sourced from two data sets and combined.  Only the surface temperature data was used from the second data set.
+                    The original data sets along with more information regarding their contents can be found", 
+                  a("here.",href="https://www.epa.gov/climate-indicators/climate-change-indicators-climate-forcing"), "and"
+                  ,a("here", href="https://www.epa.gov/climate-indicators/climate-change-indicators-us-and-global-temperature"),
+                  "There are multiple pages to this app.",br(),  "The Data Exploration page allows the user to create 
                     plots based on selected variables.  The Modeling page allows the user to fit a linear model, 
                     a regression tree, and a random forest model. The Modeling page has three tabs: the Model 
                     Info tab where each type of model is explained; the Model Fitting tab where the chosen model
                     is fitted to the data; and the Prediciton tab where the model is used to predict the response.  
                     The Data page can be used to view and subset the data set and save the data as a csv file."), 
-                img(src='GHG image.jpeg')),
-                         tabItem(tabName='exploration', h2('exploration')),
+                img(src='climate-forcing_figure1_2021.png')),
+                         tabItem(tabName='exploration', selectInput("type", 'Plot Type',choices = c("Histogram",'Bar Plot', 
+                                                                                                    'Scatter Plot')), 
+                                                        selectInput("xvar", 'X-axis Variable', choices=c('Carbon 
+                                                                                                         Dioxide'='Carbon.dioxide', 
+                                                                                                         'Methane', 'Nitrous Oxide'
+                                                                                                         ='Nitrous.oxide', 'Carbon 12'
+                                                                                                         ='CFC.12', 'Carbon 11'='CFC.11',
+                                                                                                         'Other Gases'='X.15.other.gases',
+                                                                                                         'Surface Temperature'='Earth.s.surface..and.land.ocean.')), 
+                                                      selectInput("yvar", 'Y-axis Variable', choices='Carbon 
+                                                                                              Dioxide'='Carbon.dioxide', 
+                                                                                              'Methane', 'Nitrous Oxide'
+                                                                                               ='Nitrous.oxide', 'Carbon 12'
+                                                                                              ='CFC.12', 'Carbon 11'='CFC.11',
+                                                                                              'Other Gases'='X.15.other.gases',
+                                                                                              'Surface Temperature'='Earth.s.surface..and.land.ocean.')),
                          tabItem(tabName='modeling'),
                                 tabItem(tabName='info',h3("The three modeling types that can be fit for this data set using 
                                                           this app are a general linear regression model, a regression tree,
@@ -60,6 +74,7 @@ shinyUI(dashboardPage(
                                                           usually need to be pruned.  A random forest model reduces the variance over an individual tree fit and is 
                                                           useful for looking at variable importance, but the model loses some interpretability result."))),
                                 tabItem(tabName='fitting',h2('fitting')),
-                                tabItem(tabName='prediction',h3('prediction')))))
-)
+                                tabItem(tabName='prediction',h3('prediction')),
+                tabItem(tabName='data', h2('data')))
+)))
 
