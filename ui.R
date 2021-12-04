@@ -38,32 +38,37 @@ shinyUI(dashboardPage(
                     is fitted to the data; and the Prediciton tab where the model is used to predict the response.  
                     The Data page can be used to view and subset the data set and save the data as a csv file."), 
                 img(src='climate-forcing_figure1_2021.png')),
-                         tabItem(tabName='exploration', selectInput("type", 'Plot Type',choices = c("Histogram",'Bar Plot', 
-                                                                                                    'Scatter Plot')), 
-                                                        selectInput("xvar", 'X-axis Variable', choices=c('Carbon 
+                         tabItem(tabName='exploration', checkboxGroupInput("summary", "Summary Statistic", choices=c('Mean', 
+                                                                                                                'Standard Deviation'='sd',
+                                                                                                                'Sum', 'Median', 'IQR')),
+                                                        selectInput('type', 'Plot Type',choices = c('Histogram','Density Plot'='dp', 
+                                                                                                    'Boxplot'='bp',
+                                                                                                    'Scatter Plot'='sp')), 
+                                                        selectInput('xvar', 'X-axis Variable', choices=c('Carbon 
                                                                                                          Dioxide'='Carbon.dioxide', 
                                                                                                          'Methane', 'Nitrous Oxide'
                                                                                                          ='Nitrous.oxide', 'Carbon 12'
                                                                                                          ='CFC.12', 'Carbon 11'='CFC.11',
                                                                                                          'Other Gases'='X.15.other.gases',
                                                                                                          'Surface Temperature'='Earth.s.surface..and.land.ocean.')), 
-                                                      selectInput("yvar", 'Y-axis Variable', choices='Carbon 
+                                                      conditionalPanel("input.type=='sp'",selectInput("yvar", 'Y-axis Variable', choices=c('Carbon 
                                                                                               Dioxide'='Carbon.dioxide', 
                                                                                               'Methane', 'Nitrous Oxide'
                                                                                                ='Nitrous.oxide', 'Carbon 12'
                                                                                               ='CFC.12', 'Carbon 11'='CFC.11',
                                                                                               'Other Gases'='X.15.other.gases',
-                                                                                              'Surface Temperature'='Earth.s.surface..and.land.ocean.')),
+                                                                                              'Surface Temperature'='Earth.s.surface..and.land.ocean.'))),
+                                                      numericInput('min', 'Choose Starting Year (1979-2019)', value=1979), 
+                                                      numericInput('max', 'Choose Ending Year (1979-2019)', value=2019),
+                                                      plotOutput("plot"), tableOutput("table")),
                          tabItem(tabName='modeling'),
                                 tabItem(tabName='info',h3("The three modeling types that can be fit for this data set using 
-                                                          this app are a general linear regression model, a regression tree,
-                                                          and a random forest model."),br(), h3("A generalized linear model allows for the use 
-                                                          of continuous and categorical predictors like are shown in the data.  The logit function
-                                                          links the mean to the linear form of the model. This general model will be performed using
-                                                          the poisson regression which has a link funciton of ln(lambdai/exposurei)=B0+B1x1+B2x2+...+Bpxp.",br(),h3("The 
-                                                          other model will be fit using a regression tree.  The regression tree method splits the predictor
-                                                          space into regions with different predictions for each region.  For each region
-                                                          the mean of the observations will be used as prediction."), br(),h3("The random forest model 
+                                                          this app are a multiple linear regression model, a regression tree,
+                                                          and a random forest model."),br(), h3("A multiple linear model takes the formB0+B1x1+B2x2+...+Bpxp.  
+                                                          Where x represents the value of the variable and B represents the change in the value of the response
+                                                          for each unit of the variable.",br(),h3("The other model will be fit using a regression tree.  
+                                                          The regression tree method splits the predictor space into regions with different predictions for each region.  
+                                                          For each region the mean of the observations will be used as prediction."), br(),h3("The random forest model 
                                                           will create multiple trees from bootstrap samples and average the results.  Each tree uses a 
                                                           random subset of predictors for each tree fit."), br(), h3("There are benefits and drawbacks 
                                                           to each model.  A generaized linear model allows for both continuous and categorical predictors.
