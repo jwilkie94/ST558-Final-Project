@@ -38,9 +38,9 @@ shinyUI(dashboardPage(
                     is fitted to the data; and the Prediciton tab where the model is used to predict the response.  
                     The Data page can be used to view and subset the data set and save the data as a csv file."), 
                 img(src='climate-forcing_figure1_2021.png')),
-                         tabItem(tabName='exploration', checkboxGroupInput("summary", "Summary Statistic", choices=c('Mean', 
+                         tabItem(tabName='exploration', radioButtons("summary", "Summary Statistic", choices=c('Mean', 
                                                                                                                 'Standard Deviation'='sd',
-                                                                                                                'Sum', 'Median', 'IQR')),
+                                                                                                                'Sum', 'Median', 'IQR'), inline=TRUE),
                                                         selectInput('type', 'Plot Type',choices = c('Histogram','Density Plot'='dp', 
                                                                                                     'Boxplot'='bp',
                                                                                                     'Scatter Plot'='sp')), 
@@ -49,18 +49,20 @@ shinyUI(dashboardPage(
                                                                                                          'Methane', 'Nitrous Oxide'
                                                                                                          ='Nitrous.oxide', 'Carbon 12'
                                                                                                          ='CFC.12', 'Carbon 11'='CFC.11',
-                                                                                                         'Other Gases'='X.15.other.gases',
-                                                                                                         'Surface Temperature'='Earth.s.surface..and.land.ocean.')), 
+                                                                                                         'Other Gases'='X15.other.gases',
+                                                                                                         'Surface Temperature'='Earth.s.surface..land.and.ocean.')), 
                                                       conditionalPanel("input.type=='sp'",selectInput("yvar", 'Y-axis Variable', choices=c('Carbon 
                                                                                               Dioxide'='Carbon.dioxide', 
                                                                                               'Methane', 'Nitrous Oxide'
                                                                                                ='Nitrous.oxide', 'Carbon 12'
                                                                                               ='CFC.12', 'Carbon 11'='CFC.11',
-                                                                                              'Other Gases'='X.15.other.gases',
-                                                                                              'Surface Temperature'='Earth.s.surface..and.land.ocean.'))),
+                                                                                              'Other Gases'='X15.other.gases',
+                                                                                              'Surface Temperature'='Earth.s.surface..land.and.ocean.')),
+                                                                                           checkboxInput('corr', 'Show Correlation?'), 
+                                                                                            checkboxInput('yr', 'Show Year?')),
                                                       numericInput('min', 'Choose Starting Year (1979-2019)', value=1979), 
-                                                      numericInput('max', 'Choose Ending Year (1979-2019)', value=2019),
-                                                      plotOutput("plot"), tableOutput("table")),
+                                                      numericInput('max', 'Choose Ending Year (1979-2019)', value=2019), textOutput("text"),textOutput("text2"),
+                                                      plotOutput("plot")),
                          tabItem(tabName='modeling'),
                                 tabItem(tabName='info',h3("The three modeling types that can be fit for this data set using 
                                                           this app are a multiple linear regression model, a regression tree,
