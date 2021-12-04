@@ -13,11 +13,15 @@ dataStart<-cbind(data1,data2)
 
 shinyServer(function(input, output, session) {
   
-  #filter data based on input
+  #filter data based on input for exploration page
   getData <- reactive({
    dataStart %>% filter(Year>= input$min & Year<=input$max)
   })
   
+  #filter data based on input for data page
+  getData2 <- reactive({
+    dataStart %>% filter(Year>= input$start & Year<=input$end)%>%select(input$cols)
+  })
   #create a vector of choices to output summary statistic and plot labels
   choiceVec=c('carbon 
             dioxide'='Carbon.dioxide', 
@@ -85,6 +89,7 @@ shinyServer(function(input, output, session) {
   }
   })
   
+  #create plot output for exploration page
  output$plot<-renderPlot({
    newData<-getData()
    #create base for plots
@@ -110,5 +115,12 @@ shinyServer(function(input, output, session) {
     else{g2+geom_point(position="jitter")+labs(x=names(choiceVec)[choiceVec==input$xvar], y=names(choiceVec)[choiceVec==input$yvar])}
     }
  }) 
-})
+ 
+ #create table output for data page
+ output$data<-renderTable({
+  getData2()
+ })
+ observeEvent(input$save,{write.csv(getData2(),paste0(input$file,".csv"))})
+ })
+
 

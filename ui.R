@@ -20,7 +20,7 @@ shinyUI(dashboardPage(
                                         menuSubItem('Modeling Info', tabName='info'),
                                         menuSubItem('Model Fitting', tabName='fitting'),
                                         menuSubItem('Prediction', tabName='prediction')),
-                               menuItem('Data'))),
+                               menuItem('Data', tabName='data'))),
   dashboardBody(tabItems(tabItem(tabName='about',p("This app was created to test three surpervised learning models on a data set 
                     containing greenhouse gas emissions.  The models will be used to predict the US surface temperature change
                     from the greenhouse gas emissions. 
@@ -82,6 +82,15 @@ shinyUI(dashboardPage(
                                                           useful for looking at variable importance, but the model loses some interpretability result."))),
                                 tabItem(tabName='fitting',h2('fitting')),
                                 tabItem(tabName='prediction',h3('prediction')),
-                tabItem(tabName='data', h2('data')))
-)))
+                                tabItem(tabName='data', h4('Use the options below to subset the dataset:'),h5('Select range of years:'), numericInput('start', 'From', value=1979), 
+                                           numericInput('end', 'To', value=2019), br(),h5("Choose variables to display:"), checkboxGroupInput('cols', 'Variable:', choices=c('Year','Carbon 
+                                                                                                                                                                  Dioxide'='Carbon.dioxide', 
+                                                                                                                                                                  'Methane', 'Nitrous Oxide'
+                                                                                                                                                                  ='Nitrous.oxide', 'Carbon 12'
+                                                                                                                                                                  ='CFC.12', 'Carbon 11'='CFC.11',
+                                                                                                                                                                  'Other Gases'='X15.other.gases',
+                                                                                                                                                                  'Surface Temperature'='Earth.s.surface..land.and.ocean.'),
+                                                                                                                                   selected=c('Year', 'Carbon.dioxide','Methane', 'Nitrous.oxide','CFC.12', 'CFC.11', 'X15.other.gases','Earth.s.surface..land.and.ocean.')),
+                                          br(),textInput('file','Enter a filename here to save dataset as csv:'),actionButton('save','Save as CSV'),tableOutput("data"))))
+))
 
