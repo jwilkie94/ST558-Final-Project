@@ -38,15 +38,15 @@ shinyUI(dashboardPage(
           used to predict the US surface temperature change resulting from the greenhouse gas emission measurements.  The data used in this shiny app was provided by the",
           a("US EPA",
             href = "https://ourworldindata.org"),
-          "and contains information regarding global greenhouse gas emissions and climate change in the US from 1979 to 2019. The data was
-          sourced from two data sets and combined.  Only the surface temperature data was used from the second data set, all other measurements came from the first data stet. The o
-          riginal data sets along with more information regarding their contents can be found",
+          "and contains information regarding global greenhouse gas emissions and climate change in the US from 1979 to 2019. The photo pictured below is the US EPA logo.  The data was
+          sourced from two data sets and combined.  Only the surface temperature data was used from the second data set, all other measurements came from the first data stet. The original 
+          data sets along with more information regarding their contents can be found",
           a("here.", href = "https://www.epa.gov/climate-indicators/climate-change-indicators-climate-forcing"),
           "and",
           a("here", href = "https://www.epa.gov/climate-indicators/climate-change-indicators-us-and-global-temperature"),
-          "There are multiple pages to this app.",
-          br(),
-          "The Data Exploration page allows the user to create different plots containing selected variables and to view some summary statistics.  The Modeling page has three tabs:
+          br(),br(),
+          "There are multiple pages to this app.  The Data Exploration page allows the user to create different plots containing selected variables and to view some summary statistics.  
+          The Modeling page has three tabs:
           The Model Info tab, where each type of model is explained, and some benefits and drawbacks of each are listed, the Model Fitting tab, where the data can be split into training
           and test sets based on user input, predictors can be chosen for each model, and the models will be trained and tested (the RMSE, R2, and MAE values will be reported along with
           some summary information for each model in the Model Fitting Tab), and the Prediciton tab where a linear model can be used to predict surface temperature based on inputs for
@@ -57,7 +57,7 @@ shinyUI(dashboardPage(
           src = "photo.png",
           align = 'center',
           height = '400px',
-          width = '400px'
+          width = '500px'
         )
       ),
       tabItem(
