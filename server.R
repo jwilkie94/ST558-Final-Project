@@ -3,25 +3,30 @@
 library(shiny)
 library(tidyverse)
 library(caret)
+library(randomForest)
 
 #read in two data sets, remove years from data set 2 that are not captured in the first data set
 data1<-read.csv("climate-forcing_fig-1.csv", header=TRUE, skip=6)
 data2<-read.csv("temperature_fig-2_0.csv", header=TRUE, skip=6)%>%subset(Year<2020 & Year>1978)%>%select(c(Earth.s.surface..land.and.ocean.))
 
 #combine data sets
-dataStart<-cbind(data1,data2)
+startData<-cbind(data1,data2)
 
 shinyServer(function(input, output, session) {
   
   #filter data based on input for exploration page
   getData <- reactive({
-   dataStart %>% filter(Year>= input$min & Year<=input$max)
+   startData %>% filter(Year>= input$min & Year<=input$max)
   })
   
   #filter data based on input for data page
   getData2 <- reactive({
-    dataStart %>% filter(Year>= input$start & Year<=input$end)%>%select(input$cols)
+    startData %>% filter(Year>= input$start & Year<=input$end)%>%select(input$cols)
   })
+  
+  #filter data for model training based on choices from modeling page
+  getData3<-reactive({startData%>%select(input$preds,Earth.s.surface..land.and.ocean.)})
+  
   #create a vector of choices to output summary statistic and plot labels
   choiceVec=c('carbon 
             dioxide'='Carbon.dioxide', 
@@ -85,7 +90,7 @@ shinyServer(function(input, output, session) {
     x<-as.vector(newData[,input$xvar])
     y<-as.vector(newData[,input$yvar])
     correlation<-round(cor(x,y),4)
-    paste("The correlation between ", names(choiceVec)[choiceVec==input$xvar], " and ", names(choiceVec)[choiceVec==input$yvar], " is ", correlation)
+    paste("The correlation between ", names(choiceVec)[choiceVec==input$xvar], " and ", names(choiceVec)[choiceVec==input$yvar], " is ", correlation,".")
   }
   })
   
@@ -116,10 +121,47 @@ shinyServer(function(input, output, session) {
     }
  }) 
  
+table<-eventReactive(input$create,{
+   newData<-getData3()
+   if(is.null(input$preds)){
+     return()}
+   train_index<-createDataPartition(newData$Earth.s.surface..land.and.ocean., p=input$train, list=FALSE)
+   training<-newData[train_index,]
+   test<-newData[-train_index,]
+ #create output for modeling page
+ linearFit <- train(Earth.s.surface..land.and.ocean.~., 
+                         data=training, method = "lm", trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"))
+ treeFit<-train(Earth.s.surface..land.and.ocean.~., 
+                data=training, method = "rpart", trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"),tuneGrid = data.frame(cp = seq(from=0, to=0.1, by=0.01)))
+ rfFit <- train(Earth.s.surface..land.and.ocean.~., data=training, method = "rf", 
+                trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"), tuneGrid=data.frame(mtry=(1:(ncol(training)-1))))
+
+
+ #predict using test sets
+ linearPred<-predict(linearFit, test)
+ treePred<-predict(treeFit, test)
+ rfPred<-predict(rfFit, test)
+
+ #return best model from each prediction
+ linear<-postResample(linearPred,test$Earth.s.surface..land.and.ocean.)
+ tree<-postResample(treePred,test$Earth.s.surface..land.and.ocean.)
+ rf<-postResample(rfFit$bestTune,test$Earth.s.surface..land.and.ocean.)
+
+ result<-data.frame("Model"=c("Linear Model Train", "Regression Tree Model Train", "Random Forest Model Train"),
+                    "RMSE"=c(linearFit$results[1,2],treeFit$results[1,2],rfFit$results[rfFit$bestTune$mtry,2]), "Rsquared"=c(linearFit$results[1,3],treeFit$results[1,3],rfFit$results[rfFit$bestTune$mtry,3]), "MAE"=c(linearFit$results[1,4], treeFit$results[1,4], rfFit$results[rfFit$bestTune$mtry,4]))
+ 
+ result2<-data.frame("Model"=c("Linear Model Test", "Regression Tree Model Test", "Random Forest Model Test"),
+                                       "RMSE"=c(linear[1],tree[1],rf[1]), "Rsquared"=c(linear[2],tree[2],rf[2]), "MAE"=c(linear[3], tree[3], rf[3]))
+ rbind(result,result2)
+ 
+ })
+ output$fits<-renderTable({table()})
+ 
  #create table output for data page
  output$data<-renderTable({
   getData2()
  })
+ 
  observeEvent(input$save,{write.csv(getData2(),paste0(input$file,".csv"))})
  })
 
