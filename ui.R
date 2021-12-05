@@ -88,8 +88,10 @@ shinyUI(dashboardPage(
                                                                                                                       'Methane', 'Nitrous Oxide'
                                                                                                                        ='Nitrous.oxide', 'Carbon 12'
                                                                                                                        ='CFC.12', 'Carbon 11'='CFC.11',
-                                                                                                                       'Other Gases'='X15.other.gases')), actionButton('create', 'Get Fit Statistics'),tableOutput('fits')),
-                                tabItem(tabName='prediction',h3('prediction')),
+                                                                                                                       'Other Gases'='X15.other.gases')), actionButton('create', 'Get Fit Statistics'),tableOutput('fits'),
+                                                          verbatimTextOutput("summaryLinear"), verbatimTextOutput("summaryTree"), plotOutput("plot2")),
+                                tabItem(tabName='prediction',h3("Enter variable values to predict the surface temperature using the linear model that was trained on the previous tab."), numericInput('Year','Year',value=0),numericInput('co2','Carbon 
+                                       Dioxide',value=0),numericInput('Methane','Methane',value=0), numericInput('no2','Nitrous Oxide',value=0), numericInput('c12','Carbon 12',value=0),numericInput('c11','Carbon 11',value=0),numericInput('other','Other Gases',value=0),h5("Predicted surface temperature (Celsius):"),verbatimTextOutput("prediction")),
                                 tabItem(tabName='data', h4('Use the options below to subset the dataset:'),h5('Select range of years:'), numericInput('start', 'From', value=1979), 
                                            numericInput('end', 'To', value=2019), br(),h5("Choose variables to display:"), checkboxGroupInput('cols', 'Variable:', choices=c('Year','Carbon 
                                                                                                                                                                   Dioxide'='Carbon.dioxide', 

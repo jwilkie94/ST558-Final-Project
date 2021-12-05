@@ -132,9 +132,9 @@ table<-eventReactive(input$create,{
  linearFit <- train(Earth.s.surface..land.and.ocean.~., 
                          data=training, method = "lm", trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"))
  treeFit<-train(Earth.s.surface..land.and.ocean.~., 
-                data=training, method = "rpart", trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"),tuneGrid = data.frame(cp = seq(from=0, to=0.1, by=0.01)))
+                data=training, method = "rpart", trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"),tuneGrid = data.frame(cp = seq(from=0, to=0.1, by=0.001)))
  rfFit <- train(Earth.s.surface..land.and.ocean.~., data=training, method = "rf", 
-                trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"), tuneGrid=data.frame(mtry=(1:(ncol(training)-1))))
+                trControl=trainControl(method="cv", number=5),preProcess = c("center", "scale"), tuneGrid=data.frame(mtry=(1:(ncol(training)))))
 
 
  #predict using test sets
@@ -152,15 +152,58 @@ table<-eventReactive(input$create,{
  
  result2<-data.frame("Model"=c("Linear Model Test", "Regression Tree Model Test", "Random Forest Model Test"),
                                        "RMSE"=c(linear[1],tree[1],rf[1]), "Rsquared"=c(linear[2],tree[2],rf[2]), "MAE"=c(linear[3], tree[3], rf[3]))
- rbind(result,result2)
- 
+result3<-rbind(result,result2)
+
+
+summaryLinear<-summary(linearFit)
+summaryTree<-summary(treeFit)
+list(result3,summaryLinear,summaryTree, rfFit, linearFit)
+
  })
- output$fits<-renderTable({table()})
+
+#output results from linear model fitting and summary statistics
+ output$fits<-renderTable({
+   modelOut<-table()
+   modelOut[[1]]
+   })
  
+ output$summaryLinear<-renderPrint({
+   modelOut<-table()
+   modelOut[[2]]
+ })
+ 
+ output$summaryTree<-renderPrint({
+   modelOut<-table()
+   modelOut[[3]]
+ })
+ 
+ output$plot2<-renderPlot({
+   modelOut<-table()
+   plot.train(modelOut[[4]])
+ })
+ 
+ 
+ #create data frame of input predictions
+ 
+ predictData<-reactive({
+   data.frame(Year=input$Year,Carbon.dioxide=input$co2,Methane=input$Methane,Nitrous.oxide=input$no2,CFC.12=input$c12,CFC.11=input$c11,X15.other.gases=input$other)
+ })
+ 
+ #create output for prediction tab
+  output$prediction<-renderText({
+    model<-lm(Earth.s.surface..land.and.ocean.~., data=startData)
+    newData2<-predictData()
+    result<-predict(model,newdata=newData2)
+    result
+  
+  })
+  
+
  #create table output for data page
  output$data<-renderTable({
-  getData2()
+  table<-getData2()
  })
+
  
  observeEvent(input$save,{write.csv(getData2(),paste0(input$file,".csv"))})
  })
