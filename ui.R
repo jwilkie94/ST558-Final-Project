@@ -140,7 +140,7 @@ shinyUI(dashboardPage(
             can take on any value on a line, which is not always the case. Regression trees are simple to understand and interpret, no statistical assumptions are necessary, there
             is built in variable selection, and predictors don't need to be scaled.  On the downside, even small data changes can drastically change the tree and they usually need
             to be pruned.  A random forest model reduces the variance over an individual tree fit and is useful for looking at variable importance, but the model loses some
-            interpretability result."
+            interpretability as a result."
         )
       )
       ,
