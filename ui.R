@@ -111,8 +111,8 @@ shinyUI(dashboardPage(
           checkboxInput('yr', 'Show Year?')
         ),
         numericInput('min', 'Choose Starting Year (1979-2019)', value =
-                       1979),
-        numericInput('max', 'Choose Ending Year (1979-2019)', value = 2019),
+                       1979, min=1979, max=2019, step=.5),
+        numericInput('max', 'Choose Ending Year (1979-2019)', value = 2019, min=1979, max=2019, step=5),
         textOutput("text"),
         textOutput("text2"),
         plotOutput("plot")
@@ -196,8 +196,8 @@ shinyUI(dashboardPage(
         tabName = 'data',
         h4('Use the options below to subset the dataset:'),
         h5('Select range of years:'),
-        numericInput('start', 'From', value = 1979),
-        numericInput('end', 'To', value = 2019),
+        numericInput('start', 'From', value = 1979, min=1979, max=2019, step=.5),
+        numericInput('end', 'To', value = 2019, min=1979, max=2019, step=.5),
         br(),
         h5("Choose variables to display:"),
         checkboxGroupInput(
