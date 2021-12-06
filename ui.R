@@ -147,7 +147,8 @@ shinyUI(dashboardPage(
       tabItem(
         tabName = 'fitting',
         h4(
-          'Choose parameters to train and test a multiple linear regression model, and regression tree, and a random forest model for the data.  Click the button to output fit statistics.'
+          'Choose parameters to train and test a multiple linear regression model, and regression tree, and a random forest model for the data.  Click the button to output fit statistics.  
+          The summary statistics will be displayed for the linear model and regression tree.  A plot of RMSE values will be displayed for the random forest model.'
         ),
         numericInput(
           'train',
