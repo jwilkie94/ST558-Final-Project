@@ -182,13 +182,13 @@ shinyUI(dashboardPage(
         h3(
           "Enter variable values to predict the surface temperature using the linear model that was trained on the previous tab."
         ),
-        numericInput('Year', 'Year', value = 0),
-        numericInput('co2', 'Carbon Dioxide', value = 0),
-        numericInput('Methane', 'Methane', value = 0),
-        numericInput('no2', 'Nitrous Oxide', value = 0),
-        numericInput('c12', 'Carbon 12', value = 0),
-        numericInput('c11', 'Carbon 11', value = 0),
-        numericInput('other', 'Other Gases', value = 0),
+        numericInput('Year', 'Year', value = 0, step=.005),
+        numericInput('co2', 'Carbon Dioxide', value = 0, step=.005),
+        numericInput('Methane', 'Methane', value = 0,step=.005),
+        numericInput('no2', 'Nitrous Oxide', value = 0,step=.005),
+        numericInput('c12', 'Carbon 12', value = 0,step=.005),
+        numericInput('c11', 'Carbon 11', value = 0,step=.005),
+        numericInput('other', 'Other Gases', value = 0,step=.005),
         h5("Predicted surface temperature (Celsius):"),
         verbatimTextOutput("prediction")
       ),
